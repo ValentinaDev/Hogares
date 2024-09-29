@@ -1,0 +1,19 @@
+.container-fluid{
+    background-color: #5CC3FF;
+}
+
+.custom-navbar {
+    background-color: #5CC3FF;
+}
+
+.navbar-brand{
+    font-family: "Itim", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.nav-item{
+    font-family: "Itim", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
