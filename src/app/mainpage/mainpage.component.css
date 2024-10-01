@@ -1,9 +1,6 @@
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-family: Arial, sans-serif;
+    background: radial-gradient(circle, #a3ddff, #ebf1f5);
+    
 }
 
 .container {
@@ -13,5 +10,9 @@ body {
 h1 {
     font-family: Itim;
     font-size: 5rem;
-    color: #333;
+    color: #0d62a9;
+}
+
+.pictures{
+    height: 20rem;
 }

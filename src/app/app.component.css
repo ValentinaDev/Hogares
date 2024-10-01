@@ -25,3 +25,12 @@
 .navbar-expand-lg {
 border-radius: 15px;
 }
+
+.logo{
+    height: 2.5rem;
+    width: 2.5rem ;
+}
+
+.navbar-brand{
+margin-left: 1rem;
+}
