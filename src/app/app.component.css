@@ -1,5 +1,9 @@
 .container-fluid{
     background-color: #5CC3FF;
+    border-radius: 15px;
+    margin: 20px;
+    height: 3rem;
+    
 }
 
 .custom-navbar {
@@ -16,4 +20,8 @@
     font-family: "Itim", cursive;
     font-weight: 400;
     font-style: normal;
+}
+
+.navbar-expand-lg {
+border-radius: 15px;
 }
