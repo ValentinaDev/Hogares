@@ -34,3 +34,12 @@ border-radius: 15px;
 .navbar-brand{
 margin-left: 1rem;
 }
+
+.nav-log{
+ margin-left: 46rem;   
+ text-align: right;
+}
+
+.nav-i{
+    margin-left: 2rem;
+}

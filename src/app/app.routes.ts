@@ -7,6 +7,9 @@ import { NosotrosComponent } from './nosotros/nosotros.component';
 import { OtrosproductosComponent } from './otrosproductos/otrosproductos.component';
 import { TermosComponent } from './termos/termos.component';
 import { VivetufeComponent } from './vivetufe/vivetufe.component';
+import { EmpezarComponent } from './empezar/empezar.component';
+import { LoginComponent } from './login/login.component';
+
 
 export const routes: Routes = [
     { path: '', component: MainpageComponent }, // Ruta principal
@@ -17,4 +20,6 @@ export const routes: Routes = [
   { path: 'otros-productos', component: OtrosproductosComponent }, // Ruta para Otros Productos
   { path: 'termos', component: TermosComponent }, // Ruta para Termos
   { path: 'vive-tu-fe', component: VivetufeComponent }, // Ruta para Vive tu Fe
+  {path: 'empezar', component: EmpezarComponent},
+  {path: 'login', component: LoginComponent}
 ];
