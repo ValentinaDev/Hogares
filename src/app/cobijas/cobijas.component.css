@@ -1,0 +1,25 @@
+.card{
+    width: 18rem;
+    margin-left: 2rem;
+}
+
+.card-body{
+    text-align: center;
+    font-family: itim;
+}
+
+.box{
+    
+}
+
+.card-img-top{
+    width: 10rem;
+    align-content: center;
+    margin-left: 4.5rem;
+    margin-top: 1rem;
+}
+.btn{
+    background-color:#9cbfdb;
+    border-color: #9cbfdb;
+    border-radius: 1.5rem;
+}
