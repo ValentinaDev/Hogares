@@ -1,0 +1,73 @@
+
+
+<div class="dashboard-container">
+  <!-- Barra Lateral -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>Valentina Martinez</h2>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="user"><i class="pi pi-box"></i> Productos</a></li>
+        <li><a (click)="toggleNotifications()"><i class="pi pi-inbox"></i> Notificaciones</a></li>
+        <li><a (click)="toggleMessages()"><i class="pi pi-envelope"></i> Mensajes</a></li>
+        <li><a ><i class="pi pi-cog"></i> Cerrar Sesion</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Contenido Principal -->
+  <main class="main-content">
+    <div class="header">
+      <h1 class="welcome-message">{{ userName }}</h1>
+    </div>
+
+    <!-- Tabla de Productos -->
+    <section class="product-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Imagen</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of products">
+            <td>{{ product.titulo }}</td>
+            <td><img [src]="getProductImage(product.imagen)" alt="Product Image"></td>
+            <td>{{ product.precio | currency:'USD':true:'1.0-0' }}</td>
+            <td>
+              <button class="action-button edit-button" (click)="editarProducto(product.id)">Editar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+<!-- Diálogo para Notificaciones -->
+<div class="dialog" *ngIf="displayNotifications">
+  <div class="dialog-content">
+    <h2>Notificaciones</h2>
+    <p>Estas son tus notificaciones:</p>
+    <ul>
+      <li *ngFor="let notification of notifications">{{ notification }}</li>
+    </ul>
+    <button (click)="toggleNotifications()">Cerrar</button>
+  </div>
+</div>
+
+<!-- Diálogo para Mensajes -->
+<div class="dialog" *ngIf="displayMessages">
+  <div class="dialog-content">
+    <h2>Mensajes</h2>
+    <p>Estos son tus mensajes:</p>
+    <ul>
+      <li *ngFor="let message of messages">{{ message }}</li>
+    </ul>
+    <button (click)="toggleMessages()">Cerrar</button>
+  </div>
+</div>
+  </main>
+</div>

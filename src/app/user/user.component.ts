@@ -3,22 +3,14 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-user',
   standalone: true,
   imports: [ CommonModule ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  templateUrl: './user.component.html',
+  styleUrl: './user.component.css'
 })
-export class LoginComponent {
-
-  constructor(
-    private router: Router,
-  ) {}
-
-  goUser() {
-    // Aquí puedes agregar validaciones si es necesario
-    this.router.navigate(['/user']);  // Redirige a la página de usuario
-  }
+export class UserComponent {
+  
   products: any[] = [];
   userName: string | null = null;
 
@@ -29,6 +21,10 @@ export class LoginComponent {
     // Datos ficticios para las notificaciones y mensajes
     notifications = [];
     messages = [];
+
+  constructor(
+    private router: Router,
+  ) {}
 
 
 
@@ -57,5 +53,5 @@ export class LoginComponent {
   toggleMessages() {
     this.displayMessages = !this.displayMessages;
   }
-}
 
+}
