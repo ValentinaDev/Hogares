@@ -9,6 +9,7 @@ import { TermosComponent } from './termos/termos.component';
 import { VivetufeComponent } from './vivetufe/vivetufe.component';
 import { EmpezarComponent } from './empezar/empezar.component';
 import { LoginComponent } from './login/login.component';
+import { UserComponent } from './user/user.component';
 
 
 export const routes: Routes = [
@@ -21,5 +22,6 @@ export const routes: Routes = [
   { path: 'termos', component: TermosComponent }, // Ruta para Termos
   { path: 'vive-tu-fe', component: VivetufeComponent }, // Ruta para Vive tu Fe
   {path: 'empezar', component: EmpezarComponent},
+  {path: 'user', component: UserComponent},
   {path: 'login', component: LoginComponent}
 ];
