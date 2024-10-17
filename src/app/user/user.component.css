@@ -3,20 +3,6 @@ body {
   font-family: 'Nunito', sans-serif;
 }
 
-/* Ajuste del tamaño y peso en áreas específicas */
-.sidebar-nav ul li a,
-.main-content h1,
-.table th,
-.table td {
-  font-family: 'Nunito', sans-serif;
-  font-weight: 400;
-}
-
-h1.welcome-message {
-  font-weight: 600;
-  font-size: 2rem;
-}
-
 /* Estructura de Dashboard */
 .dashboard-container {
   display: flex;
@@ -44,7 +30,7 @@ h1.welcome-message {
 }
 
 .sidebar-nav ul {
-  list-style: none; /* Eliminar los puntos de la lista */
+  list-style: none;
   padding: 0;
 }
 
@@ -74,10 +60,85 @@ h1.welcome-message {
 
 .main-content {
   width: 80%;
-  padding: 20px;
+  padding: 0px 20px 20px 20px;
   background-color: #ffffff;
   border-radius: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Cards */
+.cards-section {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.card {
+  width: 23%;
+  background-color: #f5f5f5;
+  color: white;
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.card h2 {
+  font-size: 2rem; /* Tamaño reducido */
+  margin: 0;
+}
+
+.card p {
+  font-size: 1rem; /* Tamaño reducido */
+  margin-top: 10px;
+}
+
+.card.blue {
+  background-color: #4CAF50;
+}
+
+.card.purple {
+  background-color: #8A2BE2;
+}
+
+.card.violet {
+  background-color: #6A5ACD;
+}
+
+.card.orange {
+  background-color: #FFA500;
+}
+
+.card button {
+  background-color: #FFA500;
+  color: white;
+  border: 2px solid #FFA500;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card button:hover {
+  background-color: white;
+  color: #FFA500;
+  border: 2px solid #FFA500;
 }
 
 /* Tabla de Productos */
@@ -85,18 +146,30 @@ h1.welcome-message {
   margin-top: 20px;
   border-radius: 15px;
   overflow: hidden;
+  width: 100%;
 }
 
 .product-table table {
   width: 100%;
   border-collapse: collapse;
   background-color: #ffffff;
+  border-radius: 15px;
+  overflow: hidden;
 }
 
 .product-table th, .product-table td {
   padding: 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+}
+
+.product-table th {
+  background-color: #f5f5f5;
+  text-align: center;
+}
+
+.product-table td {
+  text-align: center;
 }
 
 .product-table img {
@@ -133,105 +206,98 @@ h1.welcome-message {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semi-transparente */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Asegúrate que esté por encima de otros elementos */
+  z-index: 1000;
 }
 
 /* Estilos del contenido del diálogo */
 .dialog-content {
-  background-color: #fff;
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  align-items: center;
+  background-color: white;
   padding: 20px;
   border-radius: 10px;
-  max-width: 500px;
+  max-width: 800px;
   width: 100%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .dialog-content h2 {
-  margin-top: 0;
+  grid-column: span 3;
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
 }
 
-.dialog-content ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 10px 0;
+/* Cuadro para la imagen */
+.dialog-content .image-upload {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #ddd;
+  width: 200px;
+  height: 200px;
+  margin-right: 20px;
+  border-radius: 10px;
+  background-color: #f0f0f0;
 }
 
-.dialog-content button {
+.dialog-content .image-upload img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* Zona para subir la imagen */
+.dialog-content .upload-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dialog-content .upload-controls input[type="file"] {
+  margin-bottom: 10px;
+}
+
+/* Inputs a la derecha */
+.dialog-content form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.dialog-content form input {
+  margin-bottom: 10px;
+  padding: 10px;
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.dialog-content form .dialog-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.dialog-buttons button {
+  padding: 10px 20px;
   background-color: #4CAF50;
   color: white;
   border: none;
-  padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 20px;
 }
 
-.dialog-content button:hover {
-  background-color: #45a049;
+.dialog-buttons button[type="button"] {
+  background-color: #f44336;
 }
 
-
-/* Ajustes para pantallas de 768px o menos (tablets y móviles) */
-@media (max-width: 768px) {
-  /* Ajuste del contenedor de dashboard para pantallas pequeñas */
-  .dashboard-container {
-    flex-direction: column;
-    padding: 10px;
-  }
-
-  /* Ajuste del sidebar para que ocupe el 100% en móviles */
-  .sidebar {
-    width: 100%;
-    margin-bottom: 20px;
-  }
-
-  /* Ajuste del contenido principal para pantallas pequeñas */
-  .main-content {
-    width: 100%;
-    padding: 10px;
-  }
-
-  /* Título de bienvenida más pequeño en pantallas pequeñas */
-  h1.welcome-message {
-    font-size: 1.5rem;
-    text-align: center;
-  }
-
-  /* Ajuste de la tabla de productos para pantallas pequeñas */
-  .product-table table {
-    font-size: 0.9rem;
-  }
-
-  .product-table th,
-  .product-table td {
-    padding: 10px;
-  }
-
-  .product-table img {
-    width: 70px; /* Ajuste de tamaño de las imágenes */
-  }
-
-  /* Botones más pequeños en pantallas pequeñas */
-  .action-button {
-    padding: 8px 15px;
-    font-size: 0.8rem;
-  }
-
-  /* Ajustes para los diálogos en pantallas pequeñas */
-  .dialog-content {
-    width: 90%;
-    max-width: 400px;
-    padding: 15px;
-  }
-
-  .dialog-content button {
-    width: 100%;
-    padding: 10px;
-    font-size: 0.9rem;
-  }
+.dialog-buttons button:hover {
+  opacity: 0.9;
 }

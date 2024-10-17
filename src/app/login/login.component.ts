@@ -1,20 +1,45 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { AuthService } from '../Services/auth.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [],
+  imports: [ CommonModule, FormsModule ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
 
-  constructor( private router: Router) { }
+  email: string = '';
+  password: string = '';
+  passwordFieldType: string = 'password';
 
+  constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute) { }
 
+  togglePasswordVisibility() {
+    this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
+  }
+
+  // Método para iniciar sesión
   signIn() {
-    this.router.navigate(['/user']);
+    const user = { email: this.email, password: this.password };
+
+    this.authService.login(user).subscribe(
+      (response: any) => {
+        // Guardar el token JWT
+        this.authService.setToken(response.token);
+
+        // Obtener el URL de retorno de los queryParams o redirigir al /user por defecto
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/user';
+        this.router.navigate([returnUrl]);
+      },
+      (error) => {
+        console.error('Error en el inicio de sesión:', error);
+      }
+    );
   }
 
 }

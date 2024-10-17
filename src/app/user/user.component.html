@@ -1,4 +1,3 @@
-
 <div class="dashboard-container">
   <!-- Barra Lateral -->
   <aside class="sidebar">
@@ -7,10 +6,12 @@
     </div>
     <nav class="sidebar-nav">
       <ul>
-        <li><a href="user"><i class="pi pi-box"></i> Productos</a></li>
-        <li><a (click)="toggleNotifications()"><i class="pi pi-inbox"></i> Notificaciones</a></li>
-        <li><a (click)="toggleMessages()"><i class="pi pi-envelope"></i> Mensajes</a></li>
-        <li><a href="userConfig"><i class="pi pi-cog"></i> Cerrar Sesion</a></li>
+        <li><a (click)="mostrarTabla('productos')"><i class="pi pi-box"></i> Productos</a></li>
+        <li><a (click)="mostrarTabla('categorias')"><i class="pi pi-inbox"></i> Categorias</a></li>
+        <li><a (click)="mostrarTabla('colores')"><i class="pi pi-palette"></i> Colores</a></li>
+        <li><a (click)="mostrarTabla('tamanos')"><i class="pi pi-clone"></i> Tamaños</a></li>
+        <li><a (click)="mostrarTabla('tipos')"><i class="pi pi-table"></i> Tipos</a></li>
+        <li><a (click)="cerrarSesion()"><i class="pi pi-times-circle"></i> Cerrar Sesion</a></li>
       </ul>
     </nav>
   </aside>
@@ -21,52 +22,148 @@
       <h1 class="welcome-message">{{ userName }}</h1>
     </div>
 
-    <!-- Tabla de Productos -->
-    <section class="product-table">
-      <table>
-        <thead>
-          <tr>
-            <th>Título</th>
-            <th>Imagen</th>
-            <th>Precio</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let product of products">
-            <td>{{ product.titulo }}</td>
-            <td><img [src]="getProductImage(product.imagen)" alt="Product Image"></td>
-            <td>{{ product.precio | currency:'USD':true:'1.0-0' }}</td>
-            <td>
-              <button class="action-button edit-button" (click)="editarProducto(product.id)">Editar</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Agregar las cards aquí -->
+    <section class="cards-section">
+      <div class="card blue">
+        <i class="pi pi-envelope"></i>
+        <h2>123K</h2>
+        <p>Productos Publicados</p>
+      </div>
+      <div class="card purple">
+        <i class="pi pi-map-marker"></i>
+        <h2>23K</h2>
+        <p>Check-ins</p>
+      </div>
+      <div class="card violet">
+        <i class="pi pi-file"></i>
+        <h2>23K</h2>
+        <p>Files</p>
+      </div>
+      <!-- Card de agregar producto con botón -->
+      <div class="card orange">
+        <i class="pi pi-users"></i>
+        <p><button (click)="abrirDialogo()">{{ cardTitulo }}</button></p>
+      </div>
     </section>
 
-<!-- Diálogo para Notificaciones -->
-<div class="dialog" *ngIf="displayNotifications">
-  <div class="dialog-content">
-    <h2>Notificaciones</h2>
-    <p>Estas son tus notificaciones:</p>
-    <ul>
-      <li *ngFor="let notification of notifications">{{ notification }}</li>
-    </ul>
-    <button (click)="toggleNotifications()">Cerrar</button>
-  </div>
+    <!-- Tabla dinámica según la opción seleccionada -->
+    <section class="dynamic-table">
+      <ng-container [ngSwitch]="tablaSeleccionada">
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th *ngFor="let header of tablaHeaders">{{ header }}</th>
+              <th>Acciones</th> <!-- Nueva columna para las acciones -->
+            </tr>
+          </thead>
+          <tbody *ngIf="tablaSeleccionada === 'productos'">
+            <tr *ngFor="let product of products">
+              <td>{{ product.titulo }}</td>
+              <td><img [src]="getProductImage(product.imagen)" alt="Product Image"></td>
+              <td>{{ product.precio | currency:'USD':true:'1.0-0' }}</td>
+              <td>{{ product.categoria }}</td>
+              <td>{{ product.reviews }}</td>
+              <td>{{ product.estado }}</td>
+              <td>
+                <!-- Botones de acciones -->
+                <button class="action-button edit-button" (click)="editarProducto(product.id)">
+                  <i class="pi pi-pencil"></i> Editar
+                </button>
+                <button class="action-button delete-button" (click)="eliminarProducto(product.id)">
+                  <i class="pi pi-trash"></i> Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="tablaSeleccionada === 'categorias'">
+            <tr *ngFor="let categoria of categorias">
+              <td>{{ categoria.nombre }}</td>
+              <td>
+                <button class="action-button edit-button" (click)="editarCategoria(categoria.id)">
+                  <i class="pi pi-pencil"></i> Editar
+                </button>
+                <button class="action-button delete-button" (click)="eliminarCategoria(categoria.id)">
+                  <i class="pi pi-trash"></i> Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="tablaSeleccionada === 'colores'">
+            <tr *ngFor="let color of colores">
+              <td>{{ color.nombre }}</td>
+              <td>{{ color.codigoHex }}</td>
+              <td>
+                <button class="action-button edit-button" (click)="editarColor(color.id)">
+                  <i class="pi pi-pencil"></i> Editar
+                </button>
+                <button class="action-button delete-button" (click)="eliminarColor(color.id)">
+                  <i class="pi pi-trash"></i> Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="tablaSeleccionada === 'tamanos'">
+            <tr *ngFor="let tamano of tamanos">
+              <td>{{ tamano.nombre }}</td>
+              <td>
+                <button class="action-button edit-button" (click)="editarTamano(tamano.id)">
+                  <i class="pi pi-pencil"></i> Editar
+                </button>
+                <button class="action-button delete-button" (click)="eliminarTamano(tamano.id)">
+                  <i class="pi pi-trash"></i> Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="tablaSeleccionada === 'tipos'">
+            <tr *ngFor="let tipo of tipos">
+              <td>{{ tipo.nombre }}</td>
+              <td>
+                <button class="action-button edit-button" (click)="editarTipo(tipo.id)">
+                  <i class="pi pi-pencil"></i> Editar
+                </button>
+                <button class="action-button delete-button" (click)="eliminarTipo(tipo.id)">
+                  <i class="pi pi-trash"></i> Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    </section>
+  </main>
 </div>
 
-<!-- Diálogo para Mensajes -->
-<div class="dialog" *ngIf="displayMessages">
+
+<!-- Diálogo para agregar producto -->
+<div class="dialog" *ngIf="mostrarDialogo">
   <div class="dialog-content">
-    <h2>Mensajes</h2>
-    <p>Estos son tus mensajes:</p>
-    <ul>
-      <li *ngFor="let message of messages">{{ message }}</li>
-    </ul>
-    <button (click)="toggleMessages()">Cerrar</button>
+    <h2>Agregar Producto</h2>
+
+    <!-- Cuadro para mostrar la imagen -->
+    <div class="image-upload">
+      <!-- Mostrar la imagen cargada o un placeholder -->
+    </div>
+
+    <!-- Zona para subir la imagen -->
+    <div class="upload-controls">
+      <label for="imagen">Subir Imagen:</label>
+      <input type="file" id="imagen" (change)="subirImagen($event)" name="imagen" />
+    </div>
+
+    <!-- Inputs a la derecha -->
+    <form (ngSubmit)="agregarItem()">
+      <label for="titulo">Título:</label>
+      <input type="text" id="titulo" [(ngModel)]="nuevoItem.titulo" name="titulo" required />
+
+      <label for="precio">Precio:</label>
+      <input type="number" id="precio" [(ngModel)]="nuevoItem.precio" name="precio" required />
+
+      <!-- Botones de Guardar y Cancelar -->
+      <div class="dialog-buttons">
+        <button type="submit">Guardar</button>
+        <button type="button" (click)="cerrarDialogo()">Cancelar</button>
+      </div>
+    </form>
   </div>
-</div>
-  </main>
 </div>
