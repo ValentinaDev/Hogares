@@ -1,18 +1,56 @@
+/* Barra de navegación */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #333;
+    z-index: 1000;
+    height: 60px; /* Ajustar este valor si la barra de navegación tiene otro tamaño */
+}
+
+/* Estilos del cuerpo */
 body {
-    background: radial-gradient(circle, #a3ddff, #ebf1f5);
-    
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh; /* Cubre toda la altura de la pantalla */
+    display: flex;
+    flex-direction: column;
 }
 
-.container {
+/* Contenedor principal */
+.flex-box {
+    display: flex;
+    width: 100%;
+    height: calc(100vh - 60px); /* Ajusta la altura del contenedor principal restando el tamaño de la navbar */
+    margin-top: 60px; /* Deja espacio para la barra de navegación */
+}
+
+/* Contenedor de texto a la izquierda */
+.text-container {
+    background-color: #f0f0f0; /* Color de fondo del lado izquierdo */
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
+    height: 100%;
 }
 
-h1 {
-    font-family: Itim;
-    font-size: 5rem;
-    color: #0d62a9;
+/* Contenedor de imagen a la derecha */
+.image-container {
+    background-color: #e0f7fa; /* Color de fondo del lado derecho */
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
 
-.pictures{
-    height: 20rem;
+/* Imagen */
+.pictures {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
 }
