@@ -17,12 +17,4 @@ export class AppComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  // Método para manejar el clic en el icono de usuario
-  onUserIconClick() {
-    if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/user']);
-    } else {
-      this.router.navigate(['/login']);
-    }
-  }
 }
