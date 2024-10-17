@@ -5,12 +5,13 @@ import { BackendService } from '../Services/backend.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../Services/auth.service';
+import { NavbarComponent } from "../navbar/navbar.component";
 
 
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [ CommonModule, HttpClientModule, FormsModule ],
+  imports: [CommonModule, HttpClientModule, FormsModule, NavbarComponent],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
 })

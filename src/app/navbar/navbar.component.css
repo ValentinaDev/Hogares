@@ -1,34 +1,29 @@
+/* Estilos para el navbar */
 .container-fluid {
   background-color: #5CC3FF;
-  border-radius: 15px;
   padding: 0.5rem 1rem;
-  margin: 10px 20px; /* Ajustar para reducir los márgenes */
-  height: auto; /* Permitir que la altura se ajuste automáticamente */
+  margin: 10px 20px;
+  height: 2rem;
 }
 
-/* Hacer que la barra de navegación responda mejor a diferentes tamaños de pantalla */
 .navbar-expand-lg {
-  border-radius: 15px;
   padding: 0.5rem 1rem;
   display: flex;
-  justify-content: space-between; /* Alinea los elementos de forma uniforme */
+  justify-content: space-between;
 }
 
 .navbar-brand, .nav-item {
   font-family: "Itim", cursive;
   font-weight: 400;
-  font-style: normal;
-  margin-left: 1rem; /* Asegurar consistencia en el espaciado */
+  margin-left: 1rem;
 }
 
-/* Asegurar que el logo y el título estén alineados */
 .logo {
   height: 2.5rem;
   width: 2.5rem;
   margin-right: 0.5rem;
 }
 
-/* Ajustar el espaciado entre los elementos del menú */
 .nav-item {
   margin-left: 1.5rem;
 }
@@ -40,23 +35,18 @@
 }
 
 .nav-log {
-  margin-left: 40rem;
   text-align: right;
 }
 
-/* Mejora la responsividad en pantallas más pequeñas */
 .navbar-toggler {
   margin-left: auto;
 }
 
-/* Mantén la barra de navegación visible y con un estilo consistente */
 .custom-navbar {
   background-color: #5CC3FF;
-  border-radius: 15px;
   padding: 0.5rem 1rem;
 }
 
-/* Estilo para el dropdown */
 .dropdown-menu {
   border-radius: 10px;
   background-color: #f0f0f0;
@@ -66,4 +56,34 @@
   font-family: "Itim", cursive;
   padding: 0.5rem 1rem;
   text-align: left;
+}
+
+/* Estilos para el submenú de productos */
+.custom-submenu {
+  background-color: #ffffff;
+  padding: 1rem 0;
+  margin-top: -10px;
+}
+
+.custom-submenu .nav-link {
+  color: #000000;
+  font-family: "Itim", cursive;
+  font-weight: 400;
+  text-align: center;
+  margin: 0 20px;
+  cursor: pointer;
+}
+
+.custom-submenu .nav-link:hover {
+  color: #5CC3FF;
+  text-decoration: underline;
+}
+
+/* Control de visibilidad para el submenú */
+.productos-submenu {
+  display: none;
+}
+
+.productos-submenu.d-block {
+  display: block;
 }

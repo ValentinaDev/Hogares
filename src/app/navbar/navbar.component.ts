@@ -1,18 +1,20 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../Services/auth.service';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [],
+  imports: [ CommonModule ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
+  
+  showSubmenu = false;
 
   constructor(private authService: AuthService, private router: Router) { }
-
 
   onUserIconClick() {
     if (this.authService.isAuthenticated()) {
@@ -20,6 +22,15 @@ export class NavbarComponent {
     } else {
       this.router.navigate(['/login']);
     }
+  }
+
+  toggleProductosSubmenu() {
+    this.showSubmenu = !this.showSubmenu;  // Cambia el estado de visible/no visible
+  }
+
+  selectProducto(producto: string) {
+    console.log(`Seleccionaste el producto: ${producto}`);
+    // Puedes hacer la navegación aquí, como this.router.navigate(['/productos', producto]);
   }
 
 }
