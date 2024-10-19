@@ -1,7 +1,8 @@
-// src/app/services/auth.service.ts
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,11 @@ import { Router } from '@angular/router';
 export class AuthService {
   private apiURL = 'http://localhost:3000/api/auth';  // Cambia esta URL a tu servidor
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   // Registrar usuario
   register(user: any) {
@@ -23,12 +28,17 @@ export class AuthService {
 
   // Guardar token
   setToken(token: string) {
-    localStorage.setItem('token', token);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('token', token);
+    }
   }
 
   // Obtener token
   getToken() {
-    return localStorage.getItem('token');
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem('token');
+    }
+    return null;
   }
 
   // Verificar si el usuario está autenticado
@@ -38,7 +48,9 @@ export class AuthService {
 
   // Cerrar sesión
   logout() {
-    localStorage.removeItem('token');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('token');
+    }
     this.router.navigate(['/login']);
   }
 }

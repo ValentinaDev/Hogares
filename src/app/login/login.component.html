@@ -44,7 +44,16 @@
     </div>
 
     <!-- Botón de Inicio de Sesión -->
-    <button type="button" class="button-submit" (click)="signIn()">Sign In</button>
+    <button
+    type="button"
+    class="button-submit"
+    [ngStyle]="{
+      'background-color': loginSuccess === true ? 'green' : loginSuccess === false ? 'red' : '#151717',
+      'color': 'white'
+    }"
+    (click)="signIn()">
+    {{ buttonText }}
+  </button>
     <p class="p">Don't have an account? <span class="span">Sign Up</span></p>
   </form>
 </div>

@@ -3,7 +3,7 @@
   <!-- Barra Lateral -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <h2>UserName</h2>
+      <h2>Liliana</h2>
     </div>
     <nav class="sidebar-nav">
       <ul>
@@ -25,22 +25,30 @@
 
     <!-- Agregar las cards aquí -->
     <section class="cards-section">
+
       <div class="card blue">
-        <i class="pi pi-envelope"></i>
-        <h2>123K</h2>
-        <p>Productos Publicados</p>
+        <i class="pi pi-box"></i>
+        <h2>{{ tablaSeleccionada === 'productos' ? products.length :
+                tablaSeleccionada === 'categorias' ? categorias.length :
+                tablaSeleccionada === 'colores' ? colores.length :
+                tablaSeleccionada === 'tamanos' ? tamanos.length :
+                tablaSeleccionada === 'tipos' ? tipos.length : 0 }}</h2>
+        <p>{{ tablaSeleccionada.charAt(0).toUpperCase() + tablaSeleccionada.slice(1) }} Publicados</p>
       </div>
+
       <div class="card purple">
-        <i class="pi pi-map-marker"></i>
-        <h2>23K</h2>
-        <p>Check-ins</p>
+        <i class="pi pi-clock"></i>
+        <h2>{{ horaActual }}</h2>
+        <p>{{ fechaActual }}</p>
       </div>
+
       <div class="card violet">
-        <i class="pi pi-file"></i>
+        <i class="pi pi-whatsapp"></i>
         <h2>23K</h2>
-        <p>Files</p>
+        <p>Mensajes Recibidos</p>
       </div>
-      <!-- Card de agregar producto con botón -->
+
+      <!-- Card de agregar item con botón -->
       <div class="card orange">
         <i class="pi pi-users"></i>
         <p><button (click)="abrirDialogo()">{{ cardTitulo }}</button></p>
@@ -57,7 +65,8 @@
               <th>Acciones</th> <!-- Nueva columna para las acciones -->
             </tr>
           </thead>
-          <tbody *ngIf="tablaSeleccionada === 'productos'">
+          <!-- Productos -->
+          <tbody *ngSwitchCase="'productos'">
             <tr *ngFor="let product of products">
               <td>{{ product.titulo }}</td>
               <td><img [src]="getProductImage(product.imagen)" alt="Product Image"></td>
@@ -76,7 +85,8 @@
               </td>
             </tr>
           </tbody>
-          <tbody *ngIf="tablaSeleccionada === 'categorias'">
+          <!-- Categorías -->
+          <tbody *ngSwitchCase="'categorias'">
             <tr *ngFor="let categoria of categorias">
               <td>{{ categoria.nombre }}</td>
               <td>
@@ -89,7 +99,8 @@
               </td>
             </tr>
           </tbody>
-          <tbody *ngIf="tablaSeleccionada === 'colores'">
+          <!-- Colores -->
+          <tbody *ngSwitchCase="'colores'">
             <tr *ngFor="let color of colores">
               <td>{{ color.nombre }}</td>
               <td>{{ color.codigoHex }}</td>
@@ -103,7 +114,8 @@
               </td>
             </tr>
           </tbody>
-          <tbody *ngIf="tablaSeleccionada === 'tamanos'">
+          <!-- Tamaños -->
+          <tbody *ngSwitchCase="'tamanos'">
             <tr *ngFor="let tamano of tamanos">
               <td>{{ tamano.nombre }}</td>
               <td>
@@ -116,7 +128,8 @@
               </td>
             </tr>
           </tbody>
-          <tbody *ngIf="tablaSeleccionada === 'tipos'">
+          <!-- Tipos -->
+          <tbody *ngSwitchCase="'tipos'">
             <tr *ngFor="let tipo of tipos">
               <td>{{ tipo.nombre }}</td>
               <td>
@@ -136,35 +149,102 @@
 </div>
 
 
-<!-- Diálogo para agregar producto -->
+<!-- Diálogo dinámico para agregar items -->
 <div class="dialog" *ngIf="mostrarDialogo">
-  <div class="dialog-content">
-    <h2>Agregar Producto</h2>
+  <div class="dialog-content" [ngClass]="{'product-dialog': tablaSeleccionada === 'productos', 'other-dialog': tablaSeleccionada !== 'productos'}">
+    <h2>{{ dialogTitle }}</h2>
 
-    <!-- Cuadro para mostrar la imagen -->
-    <div class="image-upload">
-      <!-- Mostrar la imagen cargada o un placeholder -->
+    <!-- Cuadro para mostrar la imagen o un placeholder con botón dentro (solo para productos) -->
+    <div class="image-upload" *ngIf="tablaSeleccionada === 'productos'">
+      <img *ngIf="imagenPrevisualizacion" [src]="imagenPrevisualizacion" alt="Product Image"/>
+      <span *ngIf="!imagenPrevisualizacion">Subir Imagen</span>
+      <label for="imagen" class="upload-button">
+        <input type="file" id="imagen" (change)="subirImagen($event)" name="imagen" accept="image/*" />
+        Seleccionar archivo
+      </label>
     </div>
 
-    <!-- Zona para subir la imagen -->
-    <div class="upload-controls">
-      <label for="imagen">Subir Imagen:</label>
-      <input type="file" id="imagen" (change)="subirImagen($event)" name="imagen" />
+    <!-- Nombre de la imagen debajo del cuadro (solo para productos) -->
+    <div class="form-section" [ngClass]="{'product-form': tablaSeleccionada === 'productos', 'other-form': tablaSeleccionada !== 'productos'}">
+      <form (ngSubmit)="agregarItem()">
+        <div class="form-inputs" [ngClass]="{'product-inputs': tablaSeleccionada === 'productos', 'other-inputs': tablaSeleccionada !== 'productos'}">
+          <ng-container [ngSwitch]="tablaSeleccionada">
+            <!-- Campos para productos -->
+            <div *ngSwitchCase="'productos'">
+              <div class="input-group">
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" [(ngModel)]="nuevoItem.titulo" name="titulo" required />
+              </div>
+              <div class="input-group">
+                <label for="precio">Precio:</label>
+                <input type="number" id="precio" [(ngModel)]="nuevoItem.precio" name="precio" required />
+              </div>
+              <div class="input-group full-width">
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" [(ngModel)]="nuevoItem.descripcion" name="descripcion" required></textarea>
+              </div>
+              <div class="input-group">
+                <label for="categoria">Categoría:</label>
+                <select id="categoria" [(ngModel)]="nuevoItem.categoriaId" name="categoriaId" required>
+                  <option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.nombre }}</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label for="color">Color:</label>
+                <select id="color" [(ngModel)]="nuevoItem.colorId" name="colorId" required>
+                  <option *ngFor="let color of colores" [value]="color.id">{{ color.nombre }}</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label for="tamano">Tamaño:</label>
+                <select id="tamano" [(ngModel)]="nuevoItem.tamanoId" name="tamanoId" required>
+                  <option *ngFor="let tamano of tamanos" [value]="tamano.id">{{ tamano.nombre }}</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label for="tipo">Tipo:</label>
+                <select id="tipo" [(ngModel)]="nuevoItem.tipoId" name="tipoId" required>
+                  <option *ngFor="let tipo of tipos" [value]="tipo.id">{{ tipo.nombre }}</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Campos para categorías -->
+            <div *ngSwitchCase="'categorias'">
+              <label for="nombreCategoria">Nombre de la Categoría:</label>
+              <input type="text" id="nombreCategoria" [(ngModel)]="nuevoItem.nombre" name="nombre" required />
+            </div>
+
+            <!-- Campos para colores -->
+            <div *ngSwitchCase="'colores'">
+              <label for="nombreColor">Nombre del Color:</label>
+              <input type="text" id="nombreColor" [(ngModel)]="nuevoItem.nombre" name="nombre" required />
+
+              <label for="codigoHex">Código Hex:</label>
+              <input type="text" id="codigoHex" [(ngModel)]="nuevoItem.codigoHex" name="codigoHex" required />
+            </div>
+
+            <!-- Campos para tamaños -->
+            <div *ngSwitchCase="'tamanos'">
+              <label for="nombreTamano">Tamaño:</label>
+              <input type="text" id="nombreTamano" [(ngModel)]="nuevoItem.nombre" name="nombre" required />
+            </div>
+
+            <!-- Campos para tipos -->
+            <div *ngSwitchCase="'tipos'">
+              <label for="nombreTipo">Nombre del Tipo:</label>
+              <input type="text" id="nombreTipo" [(ngModel)]="nuevoItem.nombre" name="nombre" required />
+            </div>
+          </ng-container>
+        </div>
+
+        <!-- Botones debajo de los inputs -->
+        <div class="dialog-buttons">
+          <button type="button" (click)="cerrarDialogo()">Cancelar</button>
+          <button type="submit">Guardar</button>
+        </div>
+      </form>
     </div>
-
-    <!-- Inputs a la derecha -->
-    <form (ngSubmit)="agregarItem()">
-      <label for="titulo">Título:</label>
-      <input type="text" id="titulo" [(ngModel)]="nuevoItem.titulo" name="titulo" required />
-
-      <label for="precio">Precio:</label>
-      <input type="number" id="precio" [(ngModel)]="nuevoItem.precio" name="precio" required />
-
-      <!-- Botones de Guardar y Cancelar -->
-      <div class="dialog-buttons">
-        <button type="submit">Guardar</button>
-        <button type="button" (click)="cerrarDialogo()">Cancelar</button>
-      </div>
-    </form>
   </div>
 </div>
+

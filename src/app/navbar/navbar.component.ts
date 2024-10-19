@@ -11,10 +11,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
-  
+
   showSubmenu = false;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) {}
 
   onUserIconClick() {
     if (this.authService.isAuthenticated()) {

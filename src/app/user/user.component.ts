@@ -26,13 +26,23 @@ export class UserComponent {
   tablaSeleccionada: string = 'productos';
   cardTitulo: string = 'Agregar Producto';
   mostrarDialogo: boolean = false;
-  tablaHeaders: string[] = ['Título', 'Imagen', 'Precio', 'Categoría', 'Reseñas', 'Estado'];
+  tablaHeaders: string[] = ['Título', 'Imagen', 'Precio', 'Descripcion', 'Categoria', 'Color', 'Tamaño', 'Tipo'];
+  dialogTitle: string = '';
+  entityName: string = '';
 
   nuevoItem: any = {
     titulo: '',
     imagen: '',
     precio: 0
   };
+
+  imagenPrevisualizacion: string | null = null;
+  nombreImagen: string | null = null;
+
+  // Propiedades para la fecha y la hora
+  horaActual: string = '';
+  fechaActual: string = '';
+  private intervalId: any;
 
 
   constructor(
@@ -41,9 +51,58 @@ export class UserComponent {
     private authService: AuthService
   ) {}
 
+  ngOnInit() {
+    // Inicializar la hora y la fecha actual
+    this.actualizarFechaHora();
+    // Actualizar cada segundo
+    this.intervalId = setInterval(() => this.actualizarFechaHora(), 1000);
+
+    // Cargar las listas para los selectores desplegables
+    this.cargarListas();
+  }
+
+  ngOnDestroy() {
+    // Limpiar el intervalo cuando se destruye el componente
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  }
+
+
+  actualizarFechaHora() {
+    const fecha = new Date();
+
+    // Formatear la hora en formato HH:mm sin los segundos
+    this.horaActual = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    // Formatear la fecha en formato dd/MM/yyyy o similar
+    this.fechaActual = fecha.toLocaleDateString([], { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+
   abrirDialogo() {
     this.mostrarDialogo = true;
+    this.dialogTitle = 'Agregar ' + this.entityName;
+
+    // Reiniciar el formulario según la tabla seleccionada
+    switch (this.tablaSeleccionada) {
+      case 'productos':
+        this.nuevoItem = { titulo: '', imagen: '', precio: 0 };
+        break;
+      case 'categorias':
+      case 'tipos':
+      case 'tamanos':
+        this.nuevoItem = { nombre: '' };
+        break;
+      case 'colores':
+        this.nuevoItem = { nombre: '', codigoHex: '' };
+        break;
+      default:
+        this.nuevoItem = {};
+    }
   }
+
+
 
   // Cerrar el diálogo
   cerrarDialogo() {
@@ -62,41 +121,46 @@ export class UserComponent {
   mostrarTabla(tabla: string) {
     this.tablaSeleccionada = tabla;
 
-    // Cambia los encabezados según la tabla seleccionada
+    // Cambia los encabezados y el entityName según la tabla seleccionada
     switch (tabla) {
       case 'productos':
         this.backendService.getProductos().subscribe((data: any) => {
           this.products = data;
           this.cardTitulo = 'Agregar Producto';
-          this.tablaHeaders = ['Título', 'Imagen', 'Precio', 'Categoría', 'Reseñas', 'Estado'];
+          this.entityName = 'Producto';
+          this.tablaHeaders = ['Título', 'Imagen', 'Precio', 'Descripcion', 'Categoria', 'Color', 'Tamaño', 'Tipo'];
         });
         break;
       case 'categorias':
         this.backendService.getCategorias().subscribe((data: any) => {
           this.categorias = data;
           this.cardTitulo = 'Agregar Categoría';
-          this.tablaHeaders = ['Nombre']; // Ajusta encabezados para categorías
+          this.entityName = 'Categoría';
+          this.tablaHeaders = ['Nombre'];
         });
         break;
       case 'colores':
         this.backendService.getColores().subscribe((data: any) => {
           this.colores = data;
           this.cardTitulo = 'Agregar Color';
-          this.tablaHeaders = ['Color', 'Código Hexadecimal']; // Ajusta encabezados para colores
+          this.entityName = 'Color';
+          this.tablaHeaders = ['Color', 'Código Hexadecimal'];
         });
         break;
       case 'tamanos':
         this.backendService.getTamanos().subscribe((data: any) => {
           this.tamanos = data;
           this.cardTitulo = 'Agregar Tamaño';
-          this.tablaHeaders = ['Tamaño']; // Ajusta encabezados para tamaños
+          this.entityName = 'Tamaño';
+          this.tablaHeaders = ['Tamaño'];
         });
         break;
       case 'tipos':
         this.backendService.getTipos().subscribe((data: any) => {
           this.tipos = data;
           this.cardTitulo = 'Agregar Tipo';
-          this.tablaHeaders = ['Tipo']; // Ajusta encabezados para tipos
+          this.entityName = 'Tipo';
+          this.tablaHeaders = ['Tipo'];
         });
         break;
       default:
@@ -104,17 +168,82 @@ export class UserComponent {
     }
   }
 
-  agregarItem() {
-    // Aquí iría la lógica para guardar el nuevo producto/categoría/etc.
-    console.log('Agregado:', this.nuevoItem);
-    this.cerrarDialogo();
+  cargarListas() {
+    // Cargar categorías
+    this.backendService.getCategorias().subscribe((data: any) => {
+      this.categorias = data;
+    });
+    // Cargar colores
+    this.backendService.getColores().subscribe((data: any) => {
+      this.colores = data;
+    });
+    // Cargar tamaños
+    this.backendService.getTamanos().subscribe((data: any) => {
+      this.tamanos = data;
+    });
+    // Cargar tipos
+    this.backendService.getTipos().subscribe((data: any) => {
+      this.tipos = data;
+    });
   }
+
+
+
+  agregarItem() {
+    let createRequest;
+    switch (this.tablaSeleccionada) {
+      case 'productos':
+        // Preparar el FormData para enviar el archivo de imagen
+        const formData = new FormData();
+        formData.append('titulo', this.nuevoItem.titulo);
+        formData.append('precio', this.nuevoItem.precio);
+        formData.append('descripcion', this.nuevoItem.descripcion);
+        formData.append('categoriaId', this.nuevoItem.categoriaId);
+        formData.append('colorId', this.nuevoItem.colorId);
+        formData.append('tamanoId', this.nuevoItem.tamanoId);
+        formData.append('tipoId', this.nuevoItem.tipoId);
+        if (this.nuevoItem.imagen) {
+          formData.append('imagen', this.nuevoItem.imagen);
+        }
+        createRequest = this.backendService.createProducto(formData);
+        break;
+      case 'categorias':
+        createRequest = this.backendService.createCategoria(this.nuevoItem);
+        break;
+      case 'colores':
+        createRequest = this.backendService.createColor(this.nuevoItem);
+        break;
+      case 'tamanos':
+        createRequest = this.backendService.createTamano(this.nuevoItem);
+        break;
+      case 'tipos':
+        createRequest = this.backendService.createTipo(this.nuevoItem);
+        break;
+      default:
+        console.error('Tabla no válida');
+        return;
+    }
+    createRequest.subscribe(() => {
+      this.cerrarDialogo();
+      this.mostrarTabla(this.tablaSeleccionada); // Actualizar la tabla después de agregar
+    });
+  }
+
 
   subirImagen(event: any) {
     const file = event.target.files[0];
-    // Lógica para manejar el archivo y subir la imagen, tal vez usar un servicio de almacenamiento
-    // Por ahora solo guardamos el nombre del archivo
-    this.nuevoItem.imagen = file.name;
+    if (file) {
+      this.nombreImagen = file.name;
+
+      // Crear una previsualización de la imagen
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagenPrevisualizacion = e.target.result;
+      };
+      reader.readAsDataURL(file);
+
+      this.nuevoItem.imagen = file; // Guardar el archivo en el item
+    }
   }
 
   editarProducto(productId: string) {
@@ -164,7 +293,7 @@ export class UserComponent {
 
   cerrarSesion() {
     this.authService.logout();  // Llamar al método de cierre de sesión del AuthService
-    this.router.navigate(['/main']);  // Redirigir a la página principal (o la página que desees)
+    this.router.navigate(['/']);  // Redirigir a la página principal (o la página que desees)
   }
 
 

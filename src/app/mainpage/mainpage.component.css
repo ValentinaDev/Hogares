@@ -1,62 +1,50 @@
-/* Estilos del cuerpo */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: linear-gradient(to bottom, #cceeff, #f0f0f0); /* Gradiente para el fondo */
-}
-
-/* Contenedor principal */
-.main-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100%; /* Imagen de fondo fija */
-    background-size: cover;
-}
-
 /* Caja flexible */
+
+
 .flex-box {
-    display: flex;
-    width: 95%; /* Ajusta el ancho para un mejor diseño en pantalla completa */
-    height: auto;
-    margin-top: 5px; /* Deja espacio para la barra de navegación */
-    background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semitransparente para destacar contenido */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para un efecto de profundidad */
-    border-radius: 10px;
-    overflow: hidden;
+  display: flex;
+  width: 100%;
+  height: auto;
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 /* Contenedor de texto */
 .text-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  background-color: #fff;
+}
+
+h1 {
+  font-size: 2rem;
+  font-family: "Figtree", serif;
+  font-optical-sizing: auto;
+  font-size: 4.5rem;
+  font-weight: 600;
 }
 
 /* Contenedor de imagen */
 .image-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color:lightskyblue ;
-    
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: lightskyblue;
+  clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
 }
 
 /* Imagen */
 .pictures {
-    max-width: 45%;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-    border-radius: 10px; /* Borde redondeado para la imagen */
+  max-width: 100%; /* Ajusta el tamaño según lo que necesites */
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
 }
