@@ -3,61 +3,56 @@
   <div class="container-fluid">
     <img class="logo" src="../assets/pictures/LogoHogares.png" alt="Hogares">
     <a class="navbar-brand" href="">Hogares de la Inmaculada</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+      aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link nav-i" aria-current="page" href="empezar">Para Empezar</a>
+          <a class="nav-link nav-i" aria-current="page" href="/empezar">Para Empezar</a>
+        </li>
+        <!-- Dropdown de Productos -->
+        <li class="nav-item dropdown">
+          <a class="nav-link nav-i dropdown-toggle" href="#" id="productosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Productos
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="productosDropdown">
+            <li><a class="dropdown-item" href="/cobijas">Cobijas</a></li>
+            <li><a class="dropdown-item" href="/cojines">Cojines</a></li>
+            <li><a class="dropdown-item" href="/termos">Termos</a></li>
+            <li><a class="dropdown-item" href="/accesorios">Accesorios</a></li>
+            <li><a class="dropdown-item" href="/otros-productos">Otros Productos</a></li>
+            <li><a class="dropdown-item" href="/vive-tu-fe">Vive tu Fe</a></li>
+          </ul>
         </li>
         <li class="nav-item">
-          <a class="nav-link nav-i" href="javascript:void(0)" role="button" (click)="toggleProductosSubmenu()">Productos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link nav-i" aria-current="page" href="nosotros">Nosotros</a>
+          <a class="nav-link nav-i" aria-current="page" href="/nosotros">Nosotros</a>
         </li>
       </ul>
 
+
       <!-- Icono de usuario con dropdown -->
       <ul class="navbar-nav ms-auto">
+
+        <li class="nav-item">
+          <a class="nav-link" (click)="goToCart()">
+            <i class="pi pi-shopping-cart"></i>
+          </a>
+        </li>
+
         <li class="nav-item dropdown">
-          <a class="nav-link" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link" href="" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="pi pi-user"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-            <li><a class="dropdown-item" href="/login">Iniciar sesión</a></li>
+            <li><button class="dropdown-item" (click)="auth()">Mi Cuenta</button></li>
           </ul>
         </li>
+
+
       </ul>
     </div>
   </div>
 </nav>
-
-<!-- Submenú de productos -->
-<div class="productos-submenu" [hidden]="!showSubmenu">
-  <nav class="navbar custom-submenu">
-    <div class="container-fluid justify-content-center">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="/cobijas" (click)="selectProducto('cobijas')">Cobijas</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/cojines" (click)="selectProducto('cojines')">Cojines</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/termos" (click)="selectProducto('termos')">Termos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/accesorios" (click)="selectProducto('accesorios')">Accesorios</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/otros-productos" (click)="selectProducto('otros-productos')">Otros Productos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/vive-tu-fe" (click)="selectProducto('vive-tu-fe')">Vive tu Fe</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-</div>

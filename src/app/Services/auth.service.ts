@@ -29,9 +29,11 @@ export class AuthService {
   // Guardar token
   setToken(token: string) {
     if (isPlatformBrowser(this.platformId)) {
+      console.log('Guardando token:', token);
       localStorage.setItem('token', token);
     }
   }
+
 
   // Obtener token
   getToken() {
@@ -43,8 +45,11 @@ export class AuthService {
 
   // Verificar si el usuario está autenticado
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    const token = this.getToken();
+    console.log('Token en localStorage:', token);
+    return !!token;  // Devuelve true si token existe, false si es null o undefined
   }
+
 
   // Cerrar sesión
   logout() {

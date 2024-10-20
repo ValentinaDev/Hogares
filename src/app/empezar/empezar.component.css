@@ -1,37 +1,66 @@
-body{
-    background-color:#ebf8ff ;
-}
-
-.card{
-    margin: 1rem;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
-    background-color: #d1eeff;
-    border-radius: 3rem;
+body {
+  background-color: #ebf8ff;
 }
 
 .flex-container {
-    display: flex;
-    justify-content: space-between; /* Opcional: para espacio entre elementos */
-    align-items: flex-start; /* Alinear elementos al inicio */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; /* Colocar los elementos en columna */
 }
 
 .text-container {
-    font-family: Itim;
-    color: #144166;
-    margin-left: 5rem;
-    margin-right: 5rem; /* Ajustado para evitar demasiado margen */
-    margin-top: 5rem;
-    font-size: 1.5rem;
-    flex: 1; /* Permite que el contenedor se ajuste dentro del espacio disponible */
+  font-family: Itim;
+  color: #144166;
+  margin: 1rem auto;
+  text-align: center;
 }
 
-.picture-container {
-    flex: 1; /* Ajuste opcional, permite que este contenedor se adapte al espacio */
+h1 {
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
 }
 
 .empezar {
-    margin-top: 2rem;
-    margin-left: 5rem;
-    height: 30rem;
-    flex: 1; /* Para que ocupe el mismo espacio que los otros contenedores */
+  margin-top: 2rem;
+  height: 30rem;
 }
+
+/* Cambiar color de fondo de las tarjetas con clase personalizada */
+.custom-card {
+  transition: background-color 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+/* Colores específicos para cada tarjeta */
+
+/* Tarjeta 1 (oscura) */
+#card1.custom-card {
+  background-color: #d1eeff !important; /* Color oscuro */
+  color: #000000 !important; /* Texto blanco */
+}
+
+/* Tarjeta 2 (clara) */
+#card2.custom-card {
+  background-color: #f8f9fa !important; /* Color claro */
+  color: #000000 !important; /* Texto negro */
+}
+
+/* Tarjeta 3 (oscura) */
+#card3.custom-card {
+  background-color: #f8f9fa !important; /* Color claro */
+  color: #000000 !important; /* Texto negro */
+}
+
+/* Tarjeta 4 (clara) */
+#card4.custom-card {
+  background-color: #d1eeff !important; /* Color oscuro */
+  color: #000000 !important; /* Texto blanco */
+}
+
+/* Cambiar color al pasar el mouse por encima */
+.custom-card:hover {
+  background-color: #92d7ff !important; /* Color oscuro */
+  color: #000000 !important; /* Texto blanco */
+}
+

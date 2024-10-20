@@ -1,0 +1,63 @@
+<app-navbar></app-navbar>
+
+<div class="container">
+  <div class="shopping-cart" *ngIf="cart.length > 0; else emptyCart">
+    <h1>Carrito</h1>
+    <h2>{{ cart.length }} Items</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Product Details</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of cart; let i = index">
+          <td class="product-details">
+            <img [src]="item.imagen" alt="{{ item.titulo }}" />
+            <div class="product-info">
+              <p>{{ item.titulo }}</p>
+              <span>{{ item.categoria }}</span>
+              <a href="#" (click)="removeFromCart(i)">Remove</a>
+            </div>
+          </td>
+          <td>
+            <div class="quantity">
+              <button (click)="decreaseQuantity(i)">-</button>
+              <input type="text" [value]="item.quantity" readonly>
+              <button (click)="increaseQuantity(i)">+</button>
+            </div>
+          </td>
+          <td>{{ item.precio | currency:'USD' }}</td>
+          <td>{{ (item.precio * item.quantity) | currency:'USD' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <a href="#" class="continue-shopping">← Continue Shopping</a>
+  </div>
+
+  <div class="order-summary" *ngIf="cart.length > 0">
+    <h2>Order Summary</h2>
+    <div class="summary-details">
+      <p>Items <span>{{ cart.length }}</span></p>
+      <p>Shipping <span>{{ shippingCost | currency:'USD' }}</span></p>
+    </div>
+    <div class="promo-code">
+      <label for="promo">Promo Code</label>
+      <input type="text" id="promo" placeholder="Enter your code">
+      <button>Apply</button>
+    </div>
+    <div class="total-cost">
+      <p>Total Cost <span>{{ getTotalCost() | currency:'USD' }}</span></p>
+    </div>
+    <button class="checkout-btn">Checkout</button>
+  </div>
+
+  <ng-template #emptyCart>
+    <h2>Carrito</h2>
+  </ng-template>
+</div>

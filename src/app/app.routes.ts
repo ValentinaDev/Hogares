@@ -11,6 +11,8 @@ import { EmpezarComponent } from './empezar/empezar.component';
 import { LoginComponent } from './login/login.component';
 import { UserComponent } from './user/user.component';
 import { AuthGuard } from './Guards/auth.guard';
+import { ProductViewComponent } from './product-view/product-view.component';
+import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
 
 
 export const routes: Routes = [
@@ -23,6 +25,8 @@ export const routes: Routes = [
   { path: 'termos', component: TermosComponent }, // Ruta para Termos
   { path: 'vive-tu-fe', component: VivetufeComponent }, // Ruta para Vive tu Fe
   {path: 'empezar', component: EmpezarComponent},
+  {path: 'product/:id', component: ProductViewComponent},
+  {path: 'shopping-cart', component: ShoppingCartComponent},
   {path: 'user', component: UserComponent, canActivate: [AuthGuard]},
   {path: 'login', component: LoginComponent}
 ];

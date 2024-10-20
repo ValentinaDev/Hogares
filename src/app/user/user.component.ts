@@ -7,7 +7,6 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../Services/auth.service';
 import { NavbarComponent } from "../navbar/navbar.component";
 
-
 @Component({
   selector: 'app-user',
   standalone: true,
@@ -30,11 +29,8 @@ export class UserComponent {
   dialogTitle: string = '';
   entityName: string = '';
 
-  nuevoItem: any = {
-    titulo: '',
-    imagen: '',
-    precio: 0
-  };
+  nuevoItem: any = {};
+  isEditing: boolean = false;
 
   imagenPrevisualizacion: string | null = null;
   nombreImagen: string | null = null;
@@ -44,28 +40,38 @@ export class UserComponent {
   fechaActual: string = '';
   private intervalId: any;
 
-
   constructor(
     private router: Router,
     private backendService: BackendService,
     private authService: AuthService
   ) {}
 
-  ngOnInit() {
-    // Inicializar la hora y la fecha actual
+ngOnInit() {
+  if (!this.authService.isAuthenticated()) {
+    // Si no está autenticado, redirigir al login
+    this.router.navigate(['/login']);
+  } else {
+    // Continuar con la carga del componente
     this.actualizarFechaHora();
-    // Actualizar cada segundo
     this.intervalId = setInterval(() => this.actualizarFechaHora(), 1000);
-
-    // Cargar las listas para los selectores desplegables
     this.cargarListas();
+    this.mostrarTabla(this.tablaSeleccionada);
+    this.cargarProductos();
   }
+}
+
 
   ngOnDestroy() {
     // Limpiar el intervalo cuando se destruye el componente
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
+  }
+
+  cargarProductos() {
+    this.backendService.getProductos().subscribe((data: any) => {
+      this.products = data;
+    });
   }
 
 
@@ -79,43 +85,39 @@ export class UserComponent {
     this.fechaActual = fecha.toLocaleDateString([], { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   }
 
-
-  abrirDialogo() {
+  abrirDialogo(item?: any) {
     this.mostrarDialogo = true;
-    this.dialogTitle = 'Agregar ' + this.entityName;
+    this.isEditing = !!item;
+    this.dialogTitle = item ? 'Editar ' + this.entityName : 'Agregar ' + this.entityName;
 
-    // Reiniciar el formulario según la tabla seleccionada
-    switch (this.tablaSeleccionada) {
-      case 'productos':
-        this.nuevoItem = { titulo: '', imagen: '', precio: 0 };
-        break;
-      case 'categorias':
-      case 'tipos':
-      case 'tamanos':
-        this.nuevoItem = { nombre: '' };
-        break;
-      case 'colores':
-        this.nuevoItem = { nombre: '', codigoHex: '' };
-        break;
-      default:
-        this.nuevoItem = {};
+    if (item) {
+      this.nuevoItem = { ...item };
+
+      if (this.tablaSeleccionada === 'productos') {
+        this.imagenPrevisualizacion = this.getProductImage(item.imagen);
+
+        // Mapear los campos correctamente
+        this.nuevoItem.categoriaId = item.idcategoria;
+        this.nuevoItem.colorId = item.idcolor;
+        this.nuevoItem.tamanoId = item.idtamano;
+        this.nuevoItem.tipoId = item.idtipo;
+
+        // No establecer nuevoItem.imagen; solo si se selecciona una nueva imagen
+        this.nuevoItem.imagen = null;
+      }
     }
   }
-
-
 
   // Cerrar el diálogo
   cerrarDialogo() {
     this.mostrarDialogo = false;
-    this.nuevoItem = { titulo: '', imagen: '', precio: 0 }; // Resetear el formulario
+    this.nuevoItem = {}; // Resetear el formulario
+    this.isEditing = false;
+    this.imagenPrevisualizacion = null;
   }
 
-  getProductImage(imagePath: string):string {
+  getProductImage(imagePath: string): string {
     return imagePath;
-  }
-
-  goToComponentA() {
-    this.router.navigate(['/userConfig']);
   }
 
   mostrarTabla(tabla: string) {
@@ -128,7 +130,7 @@ export class UserComponent {
           this.products = data;
           this.cardTitulo = 'Agregar Producto';
           this.entityName = 'Producto';
-          this.tablaHeaders = ['Título', 'Imagen', 'Precio', 'Descripcion', 'Categoria', 'Color', 'Tamaño', 'Tipo'];
+          this.tablaHeaders = ['Título', 'Imagen', 'Precio', 'Categoría', 'Tipo', 'Color'];
         });
         break;
       case 'categorias':
@@ -187,48 +189,83 @@ export class UserComponent {
     });
   }
 
-
-
   agregarItem() {
-    let createRequest;
-    switch (this.tablaSeleccionada) {
-      case 'productos':
-        // Preparar el FormData para enviar el archivo de imagen
-        const formData = new FormData();
-        formData.append('titulo', this.nuevoItem.titulo);
-        formData.append('precio', this.nuevoItem.precio);
-        formData.append('descripcion', this.nuevoItem.descripcion);
-        formData.append('categoriaId', this.nuevoItem.categoriaId);
-        formData.append('colorId', this.nuevoItem.colorId);
-        formData.append('tamanoId', this.nuevoItem.tamanoId);
-        formData.append('tipoId', this.nuevoItem.tipoId);
-        if (this.nuevoItem.imagen) {
-          formData.append('imagen', this.nuevoItem.imagen);
-        }
-        createRequest = this.backendService.createProducto(formData);
-        break;
-      case 'categorias':
-        createRequest = this.backendService.createCategoria(this.nuevoItem);
-        break;
-      case 'colores':
-        createRequest = this.backendService.createColor(this.nuevoItem);
-        break;
-      case 'tamanos':
-        createRequest = this.backendService.createTamano(this.nuevoItem);
-        break;
-      case 'tipos':
-        createRequest = this.backendService.createTipo(this.nuevoItem);
-        break;
-      default:
-        console.error('Tabla no válida');
-        return;
+    let request;
+    if (this.isEditing) {
+      // Actualizar el item existente
+      switch (this.tablaSeleccionada) {
+        case 'productos':
+          const formData = new FormData();
+          formData.append('titulo', this.nuevoItem.titulo);
+          formData.append('precio', this.nuevoItem.precio.toString());
+          formData.append('descripcion', this.nuevoItem.descripcion);
+          formData.append('categoriaId', this.nuevoItem.categoriaId.toString());
+          formData.append('colorId', this.nuevoItem.colorId.toString());
+          formData.append('tamanoId', this.nuevoItem.tamanoId.toString());
+          formData.append('tipoId', this.nuevoItem.tipoId.toString());
+          if (this.nuevoItem.imagen instanceof File) {
+            formData.append('imagen', this.nuevoItem.imagen);
+          }
+          request = this.backendService.editProducto(this.nuevoItem.idproducto, formData);
+          break;
+        case 'categorias':
+          request = this.backendService.editCategoria(this.nuevoItem.idcategoria, this.nuevoItem);
+          break;
+        case 'colores':
+          request = this.backendService.editColor(this.nuevoItem.idcolor, this.nuevoItem);
+          break;
+        case 'tamanos':
+          request = this.backendService.editTamano(this.nuevoItem.idtamano, this.nuevoItem);
+          break;
+        case 'tipos':
+          request = this.backendService.editTipo(this.nuevoItem.idtipo, this.nuevoItem);
+          break;
+        default:
+          console.error('Tabla no válida');
+          return;
+      }
+    } else {
+      // Crear un nuevo item
+      switch (this.tablaSeleccionada) {
+        case 'productos':
+          const formData = new FormData();
+          formData.append('titulo', this.nuevoItem.titulo);
+          formData.append('precio', this.nuevoItem.precio);
+          formData.append('descripcion', this.nuevoItem.descripcion);
+          formData.append('categoriaId', this.nuevoItem.categoriaId);
+          formData.append('colorId', this.nuevoItem.colorId);
+          formData.append('tamanoId', this.nuevoItem.tamanoId);
+          formData.append('tipoId', this.nuevoItem.tipoId);
+          if (this.nuevoItem.imagen) {
+            formData.append('imagen', this.nuevoItem.imagen);
+          }
+          request = this.backendService.createProducto(formData);
+          break;
+        case 'categorias':
+          request = this.backendService.createCategoria(this.nuevoItem);
+          break;
+        case 'colores':
+          request = this.backendService.createColor(this.nuevoItem);
+          break;
+        case 'tamanos':
+          request = this.backendService.createTamano(this.nuevoItem);
+          break;
+        case 'tipos':
+          request = this.backendService.createTipo(this.nuevoItem);
+          break;
+        default:
+          console.error('Tabla no válida');
+          return;
+      }
     }
-    createRequest.subscribe(() => {
+
+    request.subscribe(() => {
       this.cerrarDialogo();
-      this.mostrarTabla(this.tablaSeleccionada); // Actualizar la tabla después de agregar
+      this.mostrarTabla(this.tablaSeleccionada); // Actualizar la tabla después de agregar o editar
+    }, (error) => {
+      console.error('Error al guardar el item:', error);
     });
   }
-
 
   subirImagen(event: any) {
     const file = event.target.files[0];
@@ -246,49 +283,80 @@ export class UserComponent {
     }
   }
 
-  editarProducto(productId: string) {
-    this.router.navigate(['/editProduct', productId]);
+
+  editarProducto(producto: any) {
+    this.tablaSeleccionada = 'productos';
+    this.entityName = 'Producto';
+    this.abrirDialogo(producto);
   }
 
-  eliminarProducto(productId: string) {
-    // Aquí iría la lógica para eliminar el producto
-    console.log('Producto eliminado con ID:', productId);
+  editarCategoria(categoria: any) {
+    this.tablaSeleccionada = 'categorias';
+    this.entityName = 'Categoría';
+    this.abrirDialogo(categoria);
   }
 
-  editarCategoria(productId: string) {
-    this.router.navigate(['/editProduct', productId]);
+  editarColor(color: any) {
+    this.tablaSeleccionada = 'colores';
+    this.entityName = 'Color';
+    this.abrirDialogo(color);
   }
 
-  eliminarCategoria(productId: string) {
-    // Aquí iría la lógica para eliminar el producto
-    console.log('Producto eliminado con ID:', productId);
+  editarTamano(tamano: any) {
+    this.tablaSeleccionada = 'tamanos';
+    this.entityName = 'Tamaño';
+    this.abrirDialogo(tamano);
   }
 
-  editarColor(productId: string) {
-    this.router.navigate(['/editProduct', productId]);
+  editarTipo(tipo: any) {
+    this.tablaSeleccionada = 'tipos';
+    this.entityName = 'Tipo';
+    this.abrirDialogo(tipo);
   }
 
-  eliminarColor(productId: string) {
-    // Aquí iría la lógica para eliminar el producto
-    console.log('Producto eliminado con ID:', productId);
+  eliminarProducto(productId: number) {
+    console.log('Eliminando producto con ID:', productId);
+    if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+      this.backendService.deleteProducto(productId).subscribe(() => {
+        this.mostrarTabla('productos'); // Actualiza la tabla después de eliminar
+      });
+    }
   }
 
-  editarTamano(productId: string) {
-    this.router.navigate(['/editProduct', productId]);
+  eliminarCategoria(categoriaId: number) {
+    console.log('Eliminando categoría con ID:', categoriaId);
+    if (confirm('¿Estás seguro de que deseas eliminar esta categoría?')) {
+      this.backendService.deleteCategoria(categoriaId).subscribe(() => {
+        this.mostrarTabla('categorias');
+      });
+    }
   }
 
-  eliminarTamano(productId: string) {
-    // Aquí iría la lógica para eliminar el producto
-    console.log('Producto eliminado con ID:', productId);
+  eliminarColor(colorId: number) {
+    console.log('Eliminando color con ID:', colorId);
+    if (confirm('¿Estás seguro de que deseas eliminar este color?')) {
+      this.backendService.deleteColor(colorId).subscribe(() => {
+        this.mostrarTabla('colores'); // Actualiza la tabla después de eliminar
+      });
+    }
   }
 
-  editarTipo(productId: string) {
-    this.router.navigate(['/editProduct', productId]);
+  eliminarTamano(tamanoId: number) {
+    console.log('Eliminando tamaño con ID:', tamanoId);
+    if (confirm('¿Estás seguro de que deseas eliminar este tamaño?')) {
+      this.backendService.deleteTamano(tamanoId).subscribe(() => {
+        this.mostrarTabla('tamanos');
+      });
+    }
   }
 
-  eliminarTipo(productId: string) {
-    // Aquí iría la lógica para eliminar el producto
-    console.log('Producto eliminado con ID:', productId);
+  eliminarTipo(tipoId: number) {
+    console.log('Eliminando tipo con ID:', tipoId);
+    if (confirm('¿Estás seguro de que deseas eliminar este tipo?')) {
+      this.backendService.deleteTipo(tipoId).subscribe(() => {
+        this.mostrarTabla('tipos');
+      });
+    }
   }
 
   cerrarSesion() {
@@ -296,6 +364,19 @@ export class UserComponent {
     this.router.navigate(['/']);  // Redirigir a la página principal (o la página que desees)
   }
 
+  getNombreCategoria(idcategoria: number): string {
+    const categoria = this.categorias.find(c => c.idcategoria === idcategoria);
+    return categoria ? categoria.nombre : 'Desconocido';
+  }
+
+  getNombreTipo(idtipo: number): string {
+    const tipo = this.tipos.find(t => t.idtipo === idtipo);
+    return tipo ? tipo.nombre : 'Desconocido';
+  }
+
+  getNombreColor(idcolor: number): string {
+    const color = this.colores.find(co => co.idcolor === idcolor);
+    return color ? color.nombre : 'Desconocido';
+  }
 
 }
-

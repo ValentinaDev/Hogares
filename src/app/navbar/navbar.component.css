@@ -90,3 +90,61 @@
   flex-direction: row; /* Alinea los items horizontalmente */
   justify-content: center; /* Centra los items */
 }
+
+.navbar-nav .btn-link {
+  color: rgba(255, 255, 255, 0.55); /* Mismo color que los otros enlaces */
+  text-decoration: none;
+  background-color: transparent;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-family: "Itim", cursive;
+  font-weight: 400;
+  margin-left: 1.5rem;
+}
+
+.navbar-nav .btn-link:hover {
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+}
+
+.navbar-nav .btn-link:focus {
+  box-shadow: none;
+}
+
+/* Ajusta el 'nav-link' cuando se usa con un botón */
+.navbar-nav .btn-link.nav-link {
+  display: inline-block;
+}
+
+/* Submenú horizontal de productos */
+.productos-submenu {
+  position: absolute;
+  top: 100%; /* Justo debajo del navbar */
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  padding: 0.5rem 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.custom-submenu .nav-link {
+  color: #000000;
+  font-family: "Itim", cursive;
+  font-weight: 400;
+  text-align: center;
+  margin: 0 20px;
+  cursor: pointer;
+}
+
+.custom-submenu .nav-link:hover {
+  color: #5CC3FF;
+  text-decoration: underline;
+}
+
+/* Asegura que los items estén en línea y centrados */
+.custom-submenu .navbar-nav {
+  display: flex;
+  flex-direction: row; /* Alinea los items horizontalmente */
+  justify-content: center; /* Centra los items */
+}

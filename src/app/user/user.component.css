@@ -6,7 +6,7 @@ body {
 /* Estructura de Dashboard */
 .dashboard-container {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   padding: 20px;
   background-color: #f0f2f5;
 }
@@ -64,6 +64,7 @@ body {
   background-color: #ffffff;
   border-radius: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex-grow: 1;
 }
 
 /* Cards */
@@ -147,6 +148,7 @@ body {
   border-radius: 15px;
   overflow: hidden;
   width: 100%;
+  table-layout: auto;
 }
 
 .product-table table {
@@ -161,6 +163,7 @@ body {
   padding: 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  word-wrap: break-word;
 }
 
 .product-table th {

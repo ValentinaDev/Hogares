@@ -71,85 +71,89 @@
               <td>{{ product.titulo }}</td>
               <td><img [src]="getProductImage(product.imagen)" alt="Product Image"></td>
               <td>{{ product.precio | currency:'USD':true:'1.0-0' }}</td>
-              <td>{{ product.categoria }}</td>
-              <td>{{ product.reviews }}</td>
-              <td>{{ product.estado }}</td>
+              <td>{{ getNombreCategoria(product.idcategoria) }}</td>
+              <td>{{ getNombreTipo(product.idtipo) }}</td>
+              <td>{{ getNombreColor(product.idcolor) }}</td>
               <td>
                 <!-- Botones de acciones -->
-                <button class="action-button edit-button" (click)="editarProducto(product.id)">
+                <button class="action-button edit-button" (click)="editarProducto(product)">
                   <i class="pi pi-pencil"></i> Editar
                 </button>
-                <button class="action-button delete-button" (click)="eliminarProducto(product.id)">
+                <button class="action-button delete-button" (click)="eliminarProducto(product.idproducto)">
                   <i class="pi pi-trash"></i> Eliminar
                 </button>
               </td>
             </tr>
           </tbody>
+
           <!-- Categorías -->
           <tbody *ngSwitchCase="'categorias'">
             <tr *ngFor="let categoria of categorias">
               <td>{{ categoria.nombre }}</td>
               <td>
-                <button class="action-button edit-button" (click)="editarCategoria(categoria.id)">
+                <button class="action-button edit-button" (click)="editarCategoria(categoria)">
                   <i class="pi pi-pencil"></i> Editar
                 </button>
-                <button class="action-button delete-button" (click)="eliminarCategoria(categoria.id)">
+                <button class="action-button delete-button" (click)="eliminarCategoria(categoria.idcategoria)">
                   <i class="pi pi-trash"></i> Eliminar
                 </button>
               </td>
             </tr>
           </tbody>
+
           <!-- Colores -->
           <tbody *ngSwitchCase="'colores'">
             <tr *ngFor="let color of colores">
               <td>{{ color.nombre }}</td>
-              <td>{{ color.codigoHex }}</td>
+              <td>{{ color.codigohex }}</td> <!-- Actualizado -->
               <td>
-                <button class="action-button edit-button" (click)="editarColor(color.id)">
+                <button class="action-button edit-button" (click)="editarColor(color)">
                   <i class="pi pi-pencil"></i> Editar
                 </button>
-                <button class="action-button delete-button" (click)="eliminarColor(color.id)">
+                <button class="action-button delete-button" (click)="eliminarColor(color.idcolor)">
                   <i class="pi pi-trash"></i> Eliminar
                 </button>
               </td>
             </tr>
           </tbody>
+
           <!-- Tamaños -->
           <tbody *ngSwitchCase="'tamanos'">
             <tr *ngFor="let tamano of tamanos">
               <td>{{ tamano.nombre }}</td>
               <td>
-                <button class="action-button edit-button" (click)="editarTamano(tamano.id)">
+                <button class="action-button edit-button" (click)="editarTamano(tamano)">
                   <i class="pi pi-pencil"></i> Editar
                 </button>
-                <button class="action-button delete-button" (click)="eliminarTamano(tamano.id)">
+                <button class="action-button delete-button" (click)="eliminarTamano(tamano.idtamano)">
                   <i class="pi pi-trash"></i> Eliminar
                 </button>
               </td>
             </tr>
           </tbody>
+
           <!-- Tipos -->
           <tbody *ngSwitchCase="'tipos'">
             <tr *ngFor="let tipo of tipos">
               <td>{{ tipo.nombre }}</td>
               <td>
-                <button class="action-button edit-button" (click)="editarTipo(tipo.id)">
+                <button class="action-button edit-button" (click)="editarTipo(tipo)">
                   <i class="pi pi-pencil"></i> Editar
                 </button>
-                <button class="action-button delete-button" (click)="eliminarTipo(tipo.id)">
+                <button class="action-button delete-button" (click)="eliminarTipo(tipo.idtipo)">
                   <i class="pi pi-trash"></i> Eliminar
                 </button>
               </td>
             </tr>
           </tbody>
+
         </table>
       </ng-container>
     </section>
   </main>
 </div>
 
-
-<!-- Diálogo dinámico para agregar items -->
+<!-- Diálogo dinámico para agregar y editar items -->
 <div class="dialog" *ngIf="mostrarDialogo">
   <div class="dialog-content" [ngClass]="{'product-dialog': tablaSeleccionada === 'productos', 'other-dialog': tablaSeleccionada !== 'productos'}">
     <h2>{{ dialogTitle }}</h2>
@@ -164,7 +168,7 @@
       </label>
     </div>
 
-    <!-- Nombre de la imagen debajo del cuadro (solo para productos) -->
+    <!-- Formulario para agregar o editar items -->
     <div class="form-section" [ngClass]="{'product-form': tablaSeleccionada === 'productos', 'other-form': tablaSeleccionada !== 'productos'}">
       <form (ngSubmit)="agregarItem()">
         <div class="form-inputs" [ngClass]="{'product-inputs': tablaSeleccionada === 'productos', 'other-inputs': tablaSeleccionada !== 'productos'}">
@@ -186,25 +190,25 @@
               <div class="input-group">
                 <label for="categoria">Categoría:</label>
                 <select id="categoria" [(ngModel)]="nuevoItem.categoriaId" name="categoriaId" required>
-                  <option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.nombre }}</option>
+                  <option *ngFor="let categoria of categorias" [ngValue]="categoria.idcategoria">{{ categoria.nombre }}</option>
                 </select>
               </div>
               <div class="input-group">
                 <label for="color">Color:</label>
                 <select id="color" [(ngModel)]="nuevoItem.colorId" name="colorId" required>
-                  <option *ngFor="let color of colores" [value]="color.id">{{ color.nombre }}</option>
+                  <option *ngFor="let color of colores" [ngValue]="color.idcolor">{{ color.nombre }}</option>
                 </select>
               </div>
               <div class="input-group">
                 <label for="tamano">Tamaño:</label>
                 <select id="tamano" [(ngModel)]="nuevoItem.tamanoId" name="tamanoId" required>
-                  <option *ngFor="let tamano of tamanos" [value]="tamano.id">{{ tamano.nombre }}</option>
+                  <option *ngFor="let tamano of tamanos" [ngValue]="tamano.idtamano">{{ tamano.nombre }}</option>
                 </select>
               </div>
               <div class="input-group">
                 <label for="tipo">Tipo:</label>
                 <select id="tipo" [(ngModel)]="nuevoItem.tipoId" name="tipoId" required>
-                  <option *ngFor="let tipo of tipos" [value]="tipo.id">{{ tipo.nombre }}</option>
+                  <option *ngFor="let tipo of tipos" [ngValue]="tipo.idtipo">{{ tipo.nombre }}</option>
                 </select>
               </div>
             </div>
@@ -247,4 +251,3 @@
     </div>
   </div>
 </div>
-

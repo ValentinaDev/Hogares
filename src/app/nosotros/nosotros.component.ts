@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavbarComponent } from "../navbar/navbar.component";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-nosotros',
@@ -9,5 +10,11 @@ import { NavbarComponent } from "../navbar/navbar.component";
   styleUrl: './nosotros.component.css'
 })
 export class NosotrosComponent {
+
+  constructor(private router: Router) { }
+
+  irProductos(){
+    this.router.navigate(['/cobijas']);
+  }
 
 }
