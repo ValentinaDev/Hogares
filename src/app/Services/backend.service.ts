@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 })
 export class BackendService {
 
-  private apiUrl = 'http://localhost:3000/api'; // Cambia esto por la URL de tu backend en producción
+  private apiUrl = 'https://hogaresbackend.up.railway.app/api';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

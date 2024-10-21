@@ -8,7 +8,7 @@ import { PLATFORM_ID } from '@angular/core';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiURL = 'http://localhost:3000/api/auth';  // Cambia esta URL a tu servidor
+  private apiURL = 'https://hogaresbackend.up.railway.app/api/auth';  // Cambia esta URL a tu servidor
 
   constructor(
     private http: HttpClient,
