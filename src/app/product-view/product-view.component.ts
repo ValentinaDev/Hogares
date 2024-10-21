@@ -15,6 +15,14 @@ export class ProductViewComponent implements OnInit {
 
   producto: any;
   cartMessage: string | null = null;
+  tamanos: string[] = [];
+  tipos: string[] = [];
+  colores: string[] = [];
+  selectedOptions = { tamano: '', tipo: '', color: '' }
+
+  buttonText: string = 'AGREGAR AL CARRITO';
+
+
 
   constructor(
     private route: ActivatedRoute,
@@ -36,18 +44,46 @@ export class ProductViewComponent implements OnInit {
     }
   }
 
+
+
+  loadProductOptions() {
+    this.backendService.getTamanos().subscribe((sizes: string[]) => {
+      this.tamanos = sizes;
+    });
+
+    this.backendService.getTipos().subscribe((types: string[]) => {
+      this.tipos = types;
+    });
+
+    this.backendService.getColores().subscribe((colors: string[]) => {
+      this.colores = colors;
+    });
+  }
+
   addToCart() {
+    const cartItem = {
+      ...this.producto,  // Incluye los detalles del producto
+      quantity: 1  // Establecer la cantidad a 1 por defecto
+    };
+
+    // Obtener el carrito del localStorage (si no existe, iniciar un carrito vacío)
     let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    cart.push(this.producto);
+
+    // Agregar el producto al carrito
+    cart.push(cartItem);
+
+    // Guardar el carrito actualizado en el localStorage
     localStorage.setItem('cart', JSON.stringify(cart));
 
-    // Mostrar el mensaje de confirmación
-    this.cartMessage = 'Producto añadido correctamente al carrito';
+    // Cambiar el texto del botón a "Producto añadido"
+    this.buttonText = 'PRODUCTO AÑADIDO CORRECTAMENTE';
 
-    // Ocultar el mensaje después de 2 segundos
+    // Después de 2 segundos, volver al texto original
     setTimeout(() => {
-      this.cartMessage = null;
+      this.buttonText = 'AGREGAR AL CARRITO';
     }, 2000);
   }
+
+
 
 }

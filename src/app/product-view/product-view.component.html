@@ -9,14 +9,27 @@
     <h1 class="product-title">{{ producto.titulo }}</h1>
 
     <p class="product-description">
+      {{ producto.tipo }}
+    </p>
+
+    <p class="product-description">
+      {{ producto.color }}
+    </p>
+
+    <p class="product-description">
+      {{ producto.tamano }}
+    </p>
+
+
+    <p class="product-description">
       {{ producto.descripcion }}
     </p>
     <div class="product-price">
       <h2>{{ producto.precio | currency:'USD':true:'1.0-0' }}</h2>
     </div>
     <div class="product-actions">
-      <button class="add-to-cart" (click)="addToCart()">ADD TO CART</button>
-      <p *ngIf="cartMessage" class="cart-message">{{ cartMessage }}</p> <!-- Mensaje de producto añadido -->
+      <!-- Usar la variable `buttonText` para el texto del botón -->
+      <button class="add-to-cart" (click)="addToCart()">{{ buttonText }}</button>
     </div>
   </div>
 </div>

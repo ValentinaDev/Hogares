@@ -8,9 +8,11 @@
     <table>
       <thead>
         <tr>
-          <th>Product Details</th>
-          <th>Quantity</th>
-          <th>Price</th>
+          <th>Detalles del Producto</th>
+          <th>Cantidad</th>
+          <th>Precio</th>
+          <th>Tamaño</th>
+          <th>Color</th>
           <th>Total</th>
         </tr>
       </thead>
@@ -21,7 +23,8 @@
             <div class="product-info">
               <p>{{ item.titulo }}</p>
               <span>{{ item.categoria }}</span>
-              <a href="#" (click)="removeFromCart(i)">Remove</a>
+              <br>
+              <a href="#" (click)="removeFromCart(i, $event)">Remover</a>
             </div>
           </td>
           <td>
@@ -32,32 +35,42 @@
             </div>
           </td>
           <td>{{ item.precio | currency:'USD' }}</td>
+          <td>{{ item.tamano}}</td> <!-- Mostrar tamaño -->
+          <td>{{ item.color}}</td>
           <td>{{ (item.precio * item.quantity) | currency:'USD' }}</td>
         </tr>
       </tbody>
     </table>
 
-    <a href="#" class="continue-shopping">← Continue Shopping</a>
+    <a href="#" class="continue-shopping" (click)="continueShopping()">← Continuar comprando</a>
   </div>
 
-  <div class="order-summary" *ngIf="cart.length > 0">
-    <h2>Order Summary</h2>
+  <!-- Envolver en una card gris -->
+  <div class="order-summary card-gray" *ngIf="cart.length > 0">
+    <h2>Resumen del Pedido</h2>
     <div class="summary-details">
       <p>Items <span>{{ cart.length }}</span></p>
-      <p>Shipping <span>{{ shippingCost | currency:'USD' }}</span></p>
+      <p>Envio <span>{{ shippingCost | currency:'USD' }}</span></p>
     </div>
     <div class="promo-code">
-      <label for="promo">Promo Code</label>
-      <input type="text" id="promo" placeholder="Enter your code">
-      <button>Apply</button>
+      <label for="promo">Código de descuento</label>
+      <input type="text" id="promo" placeholder="Ingresa tu código">
+      <button>Aplicar</button>
     </div>
     <div class="total-cost">
-      <p>Total Cost <span>{{ getTotalCost() | currency:'USD' }}</span></p>
+      <p>Total: <span>{{ getTotalCost() | currency:'USD' }}</span></p>
     </div>
-    <button class="checkout-btn">Checkout</button>
+
+    <!-- Mensaje personalizado -->
+    <div class="promo-code">
+      <label for="customMessage">Mensaje o detalle adicional:</label>
+      <textarea id="customMessage" [(ngModel)]="customMessage" placeholder="Escribe algún detalle adicional..."></textarea>
+    </div>
+
+    <button class="checkout-btn" (click)="sendWhatsApp()">Confirmar y enviar por WhatsApp</button>
   </div>
 
   <ng-template #emptyCart>
-    <h2>Carrito</h2>
+    <h2>Tu carrito está vacío</h2>
   </ng-template>
 </div>

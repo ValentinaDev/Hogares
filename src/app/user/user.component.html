@@ -71,9 +71,9 @@
               <td>{{ product.titulo }}</td>
               <td><img [src]="getProductImage(product.imagen)" alt="Product Image"></td>
               <td>{{ product.precio | currency:'USD':true:'1.0-0' }}</td>
-              <td>{{ getNombreCategoria(product.idcategoria) }}</td>
-              <td>{{ getNombreTipo(product.idtipo) }}</td>
-              <td>{{ getNombreColor(product.idcolor) }}</td>
+              <td>{{ product.categoria }}</td>
+              <td>{{ product.tipo }}</td>
+              <td>{{ product.color }}</td>
               <td>
                 <!-- Botones de acciones -->
                 <button class="action-button edit-button" (click)="editarProducto(product)">
@@ -193,24 +193,29 @@
                   <option *ngFor="let categoria of categorias" [ngValue]="categoria.idcategoria">{{ categoria.nombre }}</option>
                 </select>
               </div>
+
               <div class="input-group">
                 <label for="color">Color:</label>
                 <select id="color" [(ngModel)]="nuevoItem.colorId" name="colorId" required>
                   <option *ngFor="let color of colores" [ngValue]="color.idcolor">{{ color.nombre }}</option>
                 </select>
               </div>
+
               <div class="input-group">
                 <label for="tamano">Tamaño:</label>
                 <select id="tamano" [(ngModel)]="nuevoItem.tamanoId" name="tamanoId" required>
                   <option *ngFor="let tamano of tamanos" [ngValue]="tamano.idtamano">{{ tamano.nombre }}</option>
                 </select>
               </div>
+
               <div class="input-group">
                 <label for="tipo">Tipo:</label>
                 <select id="tipo" [(ngModel)]="nuevoItem.tipoId" name="tipoId" required>
                   <option *ngFor="let tipo of tipos" [ngValue]="tipo.idtipo">{{ tipo.nombre }}</option>
                 </select>
               </div>
+
+
             </div>
 
             <!-- Campos para categorías -->

@@ -46,19 +46,18 @@ export class UserComponent {
     private authService: AuthService
   ) {}
 
-ngOnInit() {
-  if (!this.authService.isAuthenticated()) {
-    // Si no está autenticado, redirigir al login
-    this.router.navigate(['/login']);
-  } else {
-    // Continuar con la carga del componente
-    this.actualizarFechaHora();
-    this.intervalId = setInterval(() => this.actualizarFechaHora(), 1000);
-    this.cargarListas();
-    this.mostrarTabla(this.tablaSeleccionada);
-    this.cargarProductos();
+  ngOnInit() {
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login']);
+    } else {
+      this.actualizarFechaHora();
+      this.intervalId = setInterval(() => this.actualizarFechaHora(), 1000);
+      this.cargarListas();  // Aquí se cargan todas las listas necesarias
+      this.mostrarTabla(this.tablaSeleccionada); // Muestra la tabla seleccionada
+    }
   }
-}
+
+
 
 
   ngOnDestroy() {
@@ -86,27 +85,29 @@ ngOnInit() {
   }
 
   abrirDialogo(item?: any) {
-    this.mostrarDialogo = true;
-    this.isEditing = !!item;
-    this.dialogTitle = item ? 'Editar ' + this.entityName : 'Agregar ' + this.entityName;
+    // Asegurarnos de que las listas estén cargadas antes de abrir el diálogo
+    this.cargarListas().then(() => {
+      this.mostrarDialogo = true;
+      this.isEditing = !!item;
+      this.dialogTitle = item ? 'Editar ' + this.entityName : 'Agregar ' + this.entityName;
 
-    if (item) {
-      this.nuevoItem = { ...item };
+      if (item) {
+        this.nuevoItem = {
+          ...item,
+          categoriaId: item.idcategoria || item.categoriaId,
+          colorId: item.idcolor || item.colorId,
+          tamanoId: item.idtamano || item.tamanoId,
+          tipoId: item.idtipo || item.tipoId
+        };
 
-      if (this.tablaSeleccionada === 'productos') {
-        this.imagenPrevisualizacion = this.getProductImage(item.imagen);
-
-        // Mapear los campos correctamente
-        this.nuevoItem.categoriaId = item.idcategoria;
-        this.nuevoItem.colorId = item.idcolor;
-        this.nuevoItem.tamanoId = item.idtamano;
-        this.nuevoItem.tipoId = item.idtipo;
-
-        // No establecer nuevoItem.imagen; solo si se selecciona una nueva imagen
-        this.nuevoItem.imagen = null;
+        if (this.tablaSeleccionada === 'productos' && item.imagen) {
+          this.imagenPrevisualizacion = this.getProductImage(item.imagen);
+        }
       }
-    }
+    });
   }
+
+
 
   // Cerrar el diálogo
   cerrarDialogo() {
@@ -171,101 +172,58 @@ ngOnInit() {
   }
 
   cargarListas() {
-    // Cargar categorías
-    this.backendService.getCategorias().subscribe((data: any) => {
-      this.categorias = data;
-    });
-    // Cargar colores
-    this.backendService.getColores().subscribe((data: any) => {
-      this.colores = data;
-    });
-    // Cargar tamaños
-    this.backendService.getTamanos().subscribe((data: any) => {
-      this.tamanos = data;
-    });
-    // Cargar tipos
-    this.backendService.getTipos().subscribe((data: any) => {
-      this.tipos = data;
-    });
+    return Promise.all([
+      this.backendService.getCategorias().toPromise().then((data: any) => this.categorias = data),
+      this.backendService.getColores().toPromise().then((data: any) => this.colores = data),
+      this.backendService.getTamanos().toPromise().then((data: any) => this.tamanos = data),
+      this.backendService.getTipos().toPromise().then((data: any) => this.tipos = data),
+    ]);
   }
+
 
   agregarItem() {
     let request;
     if (this.isEditing) {
-      // Actualizar el item existente
-      switch (this.tablaSeleccionada) {
-        case 'productos':
-          const formData = new FormData();
-          formData.append('titulo', this.nuevoItem.titulo);
-          formData.append('precio', this.nuevoItem.precio.toString());
-          formData.append('descripcion', this.nuevoItem.descripcion);
-          formData.append('categoriaId', this.nuevoItem.categoriaId.toString());
-          formData.append('colorId', this.nuevoItem.colorId.toString());
-          formData.append('tamanoId', this.nuevoItem.tamanoId.toString());
-          formData.append('tipoId', this.nuevoItem.tipoId.toString());
-          if (this.nuevoItem.imagen instanceof File) {
-            formData.append('imagen', this.nuevoItem.imagen);
-          }
-          request = this.backendService.editProducto(this.nuevoItem.idproducto, formData);
-          break;
-        case 'categorias':
-          request = this.backendService.editCategoria(this.nuevoItem.idcategoria, this.nuevoItem);
-          break;
-        case 'colores':
-          request = this.backendService.editColor(this.nuevoItem.idcolor, this.nuevoItem);
-          break;
-        case 'tamanos':
-          request = this.backendService.editTamano(this.nuevoItem.idtamano, this.nuevoItem);
-          break;
-        case 'tipos':
-          request = this.backendService.editTipo(this.nuevoItem.idtipo, this.nuevoItem);
-          break;
-        default:
-          console.error('Tabla no válida');
-          return;
+      // Lógica para editar producto
+      const formData = new FormData();
+      formData.append('titulo', this.nuevoItem.titulo);
+      formData.append('precio', this.nuevoItem.precio.toString());
+      formData.append('descripcion', this.nuevoItem.descripcion);
+      formData.append('categoriaId', this.nuevoItem.categoriaId.toString());
+      formData.append('colorId', this.nuevoItem.colorId.toString());
+      formData.append('tamanoId', this.nuevoItem.tamanoId.toString());
+      formData.append('tipoId', this.nuevoItem.tipoId.toString());
+
+      if (this.nuevoItem.imagen instanceof File) {
+        formData.append('imagen', this.nuevoItem.imagen);
       }
+      request = this.backendService.editProducto(this.nuevoItem.idproducto, formData);
     } else {
-      // Crear un nuevo item
-      switch (this.tablaSeleccionada) {
-        case 'productos':
-          const formData = new FormData();
-          formData.append('titulo', this.nuevoItem.titulo);
-          formData.append('precio', this.nuevoItem.precio);
-          formData.append('descripcion', this.nuevoItem.descripcion);
-          formData.append('categoriaId', this.nuevoItem.categoriaId);
-          formData.append('colorId', this.nuevoItem.colorId);
-          formData.append('tamanoId', this.nuevoItem.tamanoId);
-          formData.append('tipoId', this.nuevoItem.tipoId);
-          if (this.nuevoItem.imagen) {
-            formData.append('imagen', this.nuevoItem.imagen);
-          }
-          request = this.backendService.createProducto(formData);
-          break;
-        case 'categorias':
-          request = this.backendService.createCategoria(this.nuevoItem);
-          break;
-        case 'colores':
-          request = this.backendService.createColor(this.nuevoItem);
-          break;
-        case 'tamanos':
-          request = this.backendService.createTamano(this.nuevoItem);
-          break;
-        case 'tipos':
-          request = this.backendService.createTipo(this.nuevoItem);
-          break;
-        default:
-          console.error('Tabla no válida');
-          return;
+      // Lógica para crear nuevo producto
+      const formData = new FormData();
+      formData.append('titulo', this.nuevoItem.titulo);
+      formData.append('precio', this.nuevoItem.precio.toString());
+      formData.append('descripcion', this.nuevoItem.descripcion);
+      formData.append('categoriaId', this.nuevoItem.categoriaId.toString());
+      formData.append('colorId', this.nuevoItem.colorId.toString());
+      formData.append('tamanoId', this.nuevoItem.tamanoId.toString());
+      formData.append('tipoId', this.nuevoItem.tipoId.toString());
+
+      if (this.nuevoItem.imagen) {
+        formData.append('imagen', this.nuevoItem.imagen);
       }
+      request = this.backendService.createProducto(formData);
     }
 
     request.subscribe(() => {
       this.cerrarDialogo();
-      this.mostrarTabla(this.tablaSeleccionada); // Actualizar la tabla después de agregar o editar
+      this.mostrarTabla(this.tablaSeleccionada); // Refresca la tabla después de la operación
     }, (error) => {
       console.error('Error al guardar el item:', error);
     });
   }
+
+
 
   subirImagen(event: any) {
     const file = event.target.files[0];
@@ -366,17 +324,20 @@ ngOnInit() {
 
   getNombreCategoria(idcategoria: number): string {
     const categoria = this.categorias.find(c => c.idcategoria === idcategoria);
-    return categoria ? categoria.nombre : 'Desconocido';
+    return categoria ? categoria.nombre : 'Categoría no encontrada';
   }
 
   getNombreTipo(idtipo: number): string {
     const tipo = this.tipos.find(t => t.idtipo === idtipo);
-    return tipo ? tipo.nombre : 'Desconocido';
+    return tipo ? tipo.nombre : 'Tipo no encontrado';
   }
 
   getNombreColor(idcolor: number): string {
     const color = this.colores.find(co => co.idcolor === idcolor);
-    return color ? color.nombre : 'Desconocido';
+    return color ? color.nombre : 'Color no encontrado';
   }
+
+
+
 
 }

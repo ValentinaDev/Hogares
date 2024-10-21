@@ -95,11 +95,13 @@ body {
   text-decoration: none;
 }
 
-.order-summary {
+/* Estilo para la card gris */
+.card-gray {
   width: 30%;
-  background-color: #fff;
+  background-color: #f3f3f3;  /* Gris claro */
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;  /* Bordes suaves */
 }
 
 .order-summary h2 {
@@ -139,7 +141,8 @@ body {
 .checkout-btn {
   width: 100%;
   padding: 15px;
-  background-color: #5d00ff;
+  background-color: #5CC3FF;
+  border-radius: 30px;
   color: white;
   border: none;
   font-size: 16px;
